@@ -51,3 +51,17 @@ body {
   border-top-left-radius: 0;
   border-top-right-radius: 0;
 }
+
+.flashes {
+  list-style-type: none;
+  margin: 0;
+  padding: 0;
+}
+
+.flashes li {
+  padding: 10px;
+  margin-bottom: 10px;
+  font-size: 1.33rem;
+  border: 1px solid #eb992e;
+  background-color: #f9f9f9;
+}

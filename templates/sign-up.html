@@ -62,8 +62,19 @@
 		/>
 	</head>
 	<body class="text-center">
+		
     <div class="bg-image"></div>
 		<main class="form-signin">
+		{% with messages = get_flashed_messages() %}
+			{% if messages %}
+				<ul class="flashes">
+					{% for message in messages %}
+						<li>{{ message }}</li>
+					{% endfor %}
+				</ul>
+			{% endif %}
+    	{% endwith %}
+
       {% block form_post %}
 			<form method="post" action="{{ url_for('signup') }}">
       {% endblock %}
@@ -120,7 +131,7 @@
 					Sign in
 				</button>
 				{% endblock %}
-				<p class="mt-5 mb-3 text-muted">&copy; Name 2024</p>
+				<p class="mt-5 mb-3 text-muted">&copy; Website Chatbot 2024</p>
 			</form>
 		</main>
 		<!-- Bootstrap core JS-->
