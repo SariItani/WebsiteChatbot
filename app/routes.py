@@ -1,8 +1,10 @@
 # app/routes.py
-from flask import redirect, render_template, request, url_for, flash
+from flask import jsonify, redirect, render_template, request, url_for, flash
 from flask_login import login_user, login_required, logout_user, current_user
 from flask_bcrypt import Bcrypt
-from app import app, login_manager, User, db
+from app import app, login_manager, User, db, Message
+from datetime import datetime
+
 
 bcrypt = Bcrypt(app)
 
@@ -29,7 +31,30 @@ def home():
 @app.route('/chat')
 @login_required
 def chat():
-    return render_template('chat.html')
+    user = current_user
+    chat_history = Message.query.filter_by(sender=user).all()
+    return render_template('chat.html', chat_history=chat_history)
+
+
+@app.route('/submit-message', methods=['POST'])
+@login_required
+def submit_message():
+    message_content = request.form['message']
+    # message_type = request.form['type']
+
+    user = current_user
+    message = Message(content=message_content, sender=user, message_type='user')
+    db.session.add(message)
+    db.session.commit()
+
+    response = "Hi, I received your message: " + message_content
+    print(f"Message sent to user {current_user.username}: {response}")
+
+    message = Message(content=response, sender=user, message_type='server')
+    db.session.add(message)
+    db.session.commit()
+
+    return redirect(url_for('chat'))
 
 
 @app.route('/mcq')

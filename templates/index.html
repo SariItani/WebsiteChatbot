@@ -38,6 +38,7 @@
 			href="{{ url_for('static', filename='css/styles.css') }}"
 		/>
 		<title>{% block title %}Biology{% endblock %}</title>
+		{% block morecss %}{% endblock %}
 	</head>
 	<body id="page-top">
 		<!-- Navigation-->
@@ -873,6 +874,7 @@
 		<!-- Core theme JS
         <script src="js/scripts.js"></script> -->
 		<script src="{{ url_for('static', filename='js/scripts.js') }}"></script>
+		{% block morejs %}{% endblock %}
 		<!-- * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *-->
 		<!-- * *                               SB Forms JS                               * *-->
 		<!-- * * Activate your form at https://startbootstrap.com/solution/contact-forms * *-->
