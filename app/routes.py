@@ -4,9 +4,33 @@ from flask_login import login_user, login_required, logout_user, current_user
 from flask_bcrypt import Bcrypt
 from app import app, login_manager, User, db, Message
 from datetime import datetime
+from openai import OpenAI
+import os
+from dotenv import load_dotenv
 
 
 bcrypt = Bcrypt(app)
+
+
+load_dotenv()
+
+API_KEY = os.getenv('API_KEY')
+
+
+def run_conversation(prompt):
+    # Initialize OpenAI client
+    client = OpenAI(api_key=API_KEY)
+
+    messages = [{"role": "user", "content": prompt}]
+
+    response = client.chat.completions.create(
+        model="gpt-3.5-turbo",
+        messages=messages
+    )
+
+    response_text = response.choices[0].message.content
+
+    return response_text
 
 
 @login_manager.user_loader
@@ -40,14 +64,13 @@ def chat():
 @login_required
 def submit_message():
     message_content = request.form['message']
-    # message_type = request.form['type']
 
     user = current_user
     message = Message(content=message_content, sender=user, message_type='user')
     db.session.add(message)
     db.session.commit()
 
-    response = "Hi, I received your message: " + message_content
+    response = run_conversation(prompt=message_content)
     print(f"Message sent to user {current_user.username}: {response}")
 
     message = Message(content=response, sender=user, message_type='server')

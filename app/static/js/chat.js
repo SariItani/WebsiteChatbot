@@ -59,3 +59,9 @@ function displayMessage(type, message) {
 
   chatContainer.scrollTop = chatContainer.scrollHeight;
 }
+
+document.addEventListener('DOMContentLoaded', function() {
+  // Scroll to the bottom of the chat container
+  const chatContainer = document.getElementById('chatcontainer');
+  chatContainer.scrollTop = chatContainer.scrollHeight;
+});
