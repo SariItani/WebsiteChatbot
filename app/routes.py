@@ -86,6 +86,24 @@ def mcq():
     return render_template('mcq.html')
 
 
+@app.route('/qst')
+@login_required
+def qst():
+    return render_template('qst.html')
+
+
+@app.route('/profile')
+@login_required
+def profile():
+    return render_template('profile.html')
+
+
+@app.route('/future')
+@login_required
+def future():
+    return render_template('future.html')
+
+
 @app.route('/login', methods=['GET', 'POST'])
 def login():
     if request.method == 'POST':

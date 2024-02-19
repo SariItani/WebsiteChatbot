@@ -33,7 +33,7 @@ function sendMessage(event) {
 }
 
 document.getElementById('formsend').addEventListener('submit', sendMessage);
-  
+
 
 document.addEventListener('keydown', (event) => {
   if (event.key === 'Enter' && canSendMessage) {
@@ -56,8 +56,12 @@ function displayMessage(type, message) {
   messageDiv.textContent = message;
 
   chatContainer.appendChild(messageDiv);
-
   chatContainer.scrollTop = chatContainer.scrollHeight;
+
+  // Optionally handle element resizing (if needed)
+  chatContainer.addEventListener('resize', () => {
+    displayMessage(type, message); // Re-trigger scrolling if height changes
+  });
 }
 
 document.addEventListener('DOMContentLoaded', function() {

@@ -20,11 +20,13 @@ class User(UserMixin, db.Model):
     username = db.Column(db.String(50), unique=True, nullable=False)
     email = db.Column(db.String(120), unique=True, nullable=False)
     password = db.Column(db.String(128), nullable=False)
+    # imgpath = db
 
     def __init__(self, username, email, password):
         self.username = username
         self.email = email
         self.password = password
+        # self.imgpath
 
 
 class Message(db.Model):
