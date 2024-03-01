@@ -60,6 +60,11 @@ def home():
 def chat():
     user = current_user
     chat_history = Message.query.filter_by(sender=user).all()
+    if not chat_history:
+        message = Message(content="Hello, I will be your biology assistant. Ask me anything to begin!", sender=user, message_type='server')
+        db.session.add(message)
+        db.session.commit()
+        chat_history = [message]
     return render_template('chat.html', chat_history=chat_history)
 
 
