@@ -11008,37 +11008,56 @@ html {
   max-width: 25rem;
   border-radius: 0.5rem;
   overflow: hidden;
+  margin-bottom: 1rem; /* Add margin for spacing */
 }
+
+.portfolio .portfolio-item img {
+  width: 100%; /* Ensure image fills its container */
+  height: 100%; /* Ensure image fills its container */
+  object-fit: cover; /* Maintain aspect ratio */
+}
+
+.portfolio .portfolio-item:hover img {
+  transform: scale(0.9);
+  filter: blur(2px);
+  z-index: -1; /* Move image behind other content */
+}
+
 .portfolio .portfolio-item .portfolio-item-caption {
   position: absolute;
   top: 0;
   left: 0;
+  right: 0;
+  bottom: 0;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
   transition: all 0.2s ease-in-out;
   opacity: 0;
-  background-color: rgba(26, 188, 156, 0.9);
-}
-.portfolio .portfolio-item .portfolio-item-caption:hover {
-  opacity: 1;
-}
-.portfolio .portfolio-item .portfolio-item-caption .portfolio-item-caption-content {
-  font-size: 1.5rem;
+  z-index: 1; /* Ensure content is above image */
 }
 
-.portfolio-modal .btn-close {
-  color: #1abc9c;
-  font-size: 2rem;
-  padding: 1rem;
+.portfolio .portfolio-item:hover .portfolio-item-caption {
+  opacity: 1;
 }
-.portfolio-modal .portfolio-modal-title {
-  font-size: 2.25rem;
-  line-height: 2rem;
+
+.portfolio .portfolio-item .portfolio-item-caption-content {
+  text-align: center;
+  z-index: 2; /* Ensure text and icon are above overlay */
 }
-@media (min-width: 992px) {
-  .portfolio-modal .portfolio-modal-title {
-    font-size: 3rem;
-    line-height: 2.5rem;
-  }
+
+.portfolio .portfolio-item .portfolio-item-caption-content i {
+  font-size: 3rem;
+  color: white;
 }
+
+.portfolio .portfolio-item .portfolio-item-caption-content p {
+  color: white;
+  font-size: 2.5rem;
+  margin-top: 0.5rem;
+}
+
 
 .footer {
   padding-top: 5rem;

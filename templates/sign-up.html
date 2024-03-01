@@ -12,7 +12,7 @@
 		<link
 			rel="icon"
 			type="image/x-icon"
-			href="{{ url_for('static', filename='assets/favicon.ico') }}"
+			href="{{ url_for('static', filename='assets/img/dna.svg') }}"
 		/>
 		<!-- Font Awesome icons (free version)-->
 		<script
@@ -75,16 +75,12 @@
 			{% endif %}
     	{% endwith %}
 
-      {% block form_post %}
-			<form method="post" action="{{ url_for('signup') }}">
-      {% endblock %}
-				<img
-					class="mb-4"
-					src="{{ url_for('static', filename='assets/bootstrap-logo.svg') }}"
-					alt=""
-					width="72"
-					height="57"
-				/>
+		{% block form_post %}
+        <form method="post" action="{{ url_for('signup') }}">
+        {% endblock %}
+            <div class="image-container">
+                <img class="mb-4" src="{{ url_for('static', filename='assets/img/biogenie.jpeg') }}" alt="" width="377" height="300" />
+            </div>
 				<h1 class="h3 mb-3 fw-normal">Enter Your Details</h1>
 
 				<div class="form-floating">

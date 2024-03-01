@@ -1,4 +1,6 @@
 # app/routes.py
+import hashlib
+import time
 from flask import jsonify, redirect, render_template, request, url_for, flash
 from flask_login import login_user, login_required, logout_user, current_user
 from flask_bcrypt import Bcrypt
@@ -7,6 +9,7 @@ from datetime import datetime
 from openai import OpenAI
 import os
 from dotenv import load_dotenv
+from werkzeug.utils import secure_filename
 
 
 bcrypt = Bcrypt(app)
@@ -18,7 +21,6 @@ API_KEY = os.getenv('API_KEY')
 
 
 def run_conversation(prompt):
-    # Initialize OpenAI client
     client = OpenAI(api_key=API_KEY)
 
     messages = [{"role": "user", "content": prompt}]
@@ -42,14 +44,15 @@ def load_user(user_id):
 @login_required
 def index():
     username = current_user.username
-    return render_template('index.html', username=username)
+    imgpath = current_user.imgpath
+    bio = current_user.bio
+    return render_template('index.html', username=username, imgpath=imgpath, bio=bio)
 
 
 @app.route('/home')
 @login_required
 def home():
-    username = current_user.username
-    return render_template('home.html', username=username)
+    return render_template('home.html')
 
 
 @app.route('/chat')
@@ -92,10 +95,51 @@ def qst():
     return render_template('qst.html')
 
 
-@app.route('/profile')
+UPLOAD_FOLDER = 'app/static/assets/img/profilepics'
+ALLOWED_EXTENSIONS = ['jpeg', 'jpg', 'png', 'gif', 'bmp', 'tiff', 'tif', 'svg', 'webp']
+
+def allowed_file(filename):
+    file_ext = filename.rsplit('.', 1)[1].lower()
+    print("Filename Extension:", file_ext)
+    print("Allowed Extensions:", ALLOWED_EXTENSIONS)
+    return '.' in filename and file_ext in ALLOWED_EXTENSIONS
+
+def generate_filename(username, extension):
+    unique_string = f"{username}{time.time()}"
+    hashed_string = hashlib.sha256(unique_string.encode()).hexdigest()
+    return f"{hashed_string}.{extension}"
+
+@app.route('/profile', methods=['GET', 'POST'])
 @login_required
 def profile():
-    return render_template('profile.html')
+    imgpath = current_user.imgpath
+    if request.method == 'POST':
+        username = request.form.get('username').strip()
+        bio = request.form.get('bio').strip()
+        print(request.files)
+        if 'profile_picture' in request.files:
+            file = request.files['profile_picture']
+            print("Output of allowed_file: ", allowed_file(file.filename))
+            print("Filename:", file.filename)
+            if file and allowed_file(file.filename):
+                extension = file.filename.rsplit('.', 1)[1].lower()
+                filename = generate_filename(username, extension)
+                file.save(os.path.join(UPLOAD_FOLDER, filename))
+                imgpath = f'assets/img/profilepics/{filename}'
+                if current_user.imgpath and current_user.imgpath != imgpath:
+                    old_img_path = os.path.join(UPLOAD_FOLDER, current_user.imgpath.split('/')[-1])
+                    if os.path.exists(old_img_path):
+                        os.remove(old_img_path)
+        if username!="" and username != current_user.username:
+            current_user.username = username
+        if bio and bio != current_user.bio:
+            current_user.bio = bio
+        if imgpath and imgpath != current_user.imgpath:
+            current_user.imgpath = imgpath
+        print(f"Updating {current_user.username}, {current_user.bio}, {current_user.imgpath} to: {username}, {bio}, {imgpath}")
+        db.session.commit()
+        return redirect(url_for('profile'))
+    return render_template('profile.html', imgpath=imgpath)
 
 
 @app.route('/future')
@@ -148,7 +192,7 @@ def signup():
             flash('Email is already taken. Please choose a different one.', 'danger')
         else:
             hashed_password = bcrypt.generate_password_hash(password).decode('utf-8')
-            user = User(username=username, email=email, password=hashed_password)
+            user = User(username=username, email=email, password=hashed_password, imgpath="assets/img/avataaars.svg", bio="Enter bio in the Profile Section...")
             db.session.add(user)
             db.session.commit()
 

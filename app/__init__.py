@@ -20,13 +20,15 @@ class User(UserMixin, db.Model):
     username = db.Column(db.String(50), unique=True, nullable=False)
     email = db.Column(db.String(120), unique=True, nullable=False)
     password = db.Column(db.String(128), nullable=False)
-    # imgpath = db
+    imgpath = db.Column(db.String(255))
+    bio = db.Column(db.Text)
 
-    def __init__(self, username, email, password):
+    def __init__(self, username, email, password, imgpath=None, bio=None):
         self.username = username
         self.email = email
         self.password = password
-        # self.imgpath
+        self.imgpath = imgpath
+        self.bio = bio
 
 
 class Message(db.Model):
@@ -34,7 +36,7 @@ class Message(db.Model):
     content = db.Column(db.String(500), nullable=False)
     sender_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
     sender = db.relationship('User', backref=db.backref('messages', lazy=True))
-    message_type = db.Column(db.String(10), nullable=False)  # Add this line
+    message_type = db.Column(db.String(10), nullable=False)
     timestamp = db.Column(db.DateTime, default=datetime.utcnow)
 
     def __init__(self, content, sender, message_type):
