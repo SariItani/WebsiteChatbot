@@ -1,6 +1,11 @@
 let chatHistory = [];
 let canSendMessage = true;
 
+
+const chatContainer = document.getElementById('chat');
+chatContainer.scrollTo(0, chatContainer.scrollHeight);
+
+
 function sendMessage(event) {
   event.preventDefault();
 
@@ -34,7 +39,6 @@ function sendMessage(event) {
 
 document.getElementById('formsend').addEventListener('submit', sendMessage);
 
-
 document.addEventListener('keydown', (event) => {
   if (event.key === 'Enter' && canSendMessage) {
     sendMessage();
@@ -49,23 +53,7 @@ sendButton.addEventListener('click', () => {
 });
 
 function displayMessage(type, message) {
-  const chatContainer = document.getElementById('chat');
   const messageDiv = document.createElement('div');
-
   messageDiv.className = type === 'user' ? 'user-message' : 'server-message';
-  messageDiv.textContent = message;
-
   chatContainer.appendChild(messageDiv);
-  chatContainer.scrollTop = chatContainer.scrollHeight;
-
-  // Optionally handle element resizing (if needed)
-  chatContainer.addEventListener('resize', () => {
-    displayMessage(type, message); // Re-trigger scrolling if height changes
-  });
 }
-
-document.addEventListener('DOMContentLoaded', function() {
-  // Scroll to the bottom of the chat container
-  const chatContainer = document.getElementById('chatcontainer');
-  chatContainer.scrollTop = chatContainer.scrollHeight;
-});
